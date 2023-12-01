@@ -1,20 +1,16 @@
 <?php
-include 'koneksi.php';
-
-// ambil data dari body request
-$data = json_decode(file_get_contents('php://input'), true);
-
-// insert data ke database
-$query = "INSERT INTO catatan_pelanggaran (nama_pelanggar, tanggal, jenis_pelanggaran, keterangan)
-          VALUES ('{$data['nama_pelanggar']}', '{$data['tanggal']}', '{$data['jenis_pelanggaran']}', '{$data['keterangan']}')";
-
-$result = mysqli_query($koneksi, $query);
-
-if ($result) {
-    echo json_encode(['status' => 'sukses']);
+require 'koneksi.php';
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+//terima data dari mobile
+$judul = trim($data['judul']);
+$deskripsi = trim($data['deskripsi']);
+http_response_code(201);
+if ($judul != '' and $deskripsi != '') {
+    $query = mysqli_query($koneksi, "insert into catatan(judul,deskripsi) values('$judul','$deskripsi')");
+    $pesan = true;
 } else {
-    echo json_encode(['status' => 'gagal']);
+    $pesan = false;
 }
-
-mysqli_close($koneksi);
-?>
+echo json_encode($pesan);
+echo mysqli_error($koneksi);

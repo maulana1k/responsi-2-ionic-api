@@ -1,24 +1,18 @@
 <?php
-include 'koneksi.php';
-
-// ambil data dari body request
-$data = json_decode(file_get_contents('php://input'), true);
-
-// update data di database
-$query = "UPDATE catatan_pelanggaran SET
-          nama_pelanggar = '{$data['nama_pelanggar']}',
-          tanggal = '{$data['tanggal']}',
-          jenis_pelanggaran = '{$data['jenis_pelanggaran']}',
-          keterangan = '{$data['keterangan']}'
-          WHERE id = {$data['id']}";
-
-$result = mysqli_query($koneksi, $query);
-
-if ($result) {
-    echo json_encode(['status' => 'sukses']);
+require 'koneksi.php';
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+//terima data dari mobile
+$id = trim($data['id']);
+$judul = trim($data['judul']);
+$deskripsi = trim($data['deskripsi']);
+http_response_code(201);
+if ($judul != '' and $deskripsi != '') {
+    $query = mysqli_query($koneksi, "update catatan set judul='$judul',deskripsi='$deskripsi' where 
+id='$id'");
+    $pesan = true;
 } else {
-    echo json_encode(['status' => 'gagal']);
+    $pesan = false;
 }
-
-mysqli_close($koneksi);
-?>
+echo json_encode($pesan);
+echo mysqli_error($koneksi);

@@ -1,19 +1,16 @@
 <?php
-include 'koneksi.php';
-
-// ambil data dari body request
-$data = json_decode(file_get_contents('php://input'), true);
-
-// hapus data di database
-$query = "DELETE FROM catatan_pelanggaran WHERE id = {$data['id']}";
-
-$result = mysqli_query($koneksi, $query);
-
-if ($result) {
-    echo json_encode(['status' => 'sukses']);
+require 'koneksi.php';
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+$pesan = [];
+$id = $_GET['id'];
+$query = mysqli_query($koneksi, "delete from catatan where id='$id'");
+if ($query) {
+    http_response_code(201);
+    $pesan['status'] = 'sukses';
 } else {
-    echo json_encode(['status' => 'gagal']);
+    http_response_code(422);
+    $pesan['status'] = 'gagal';
 }
-
-mysqli_close($koneksi);
-?>
+echo json_encode($pesan);
+echo mysqli_error($koneksi);

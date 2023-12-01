@@ -1,14 +1,12 @@
 <?php
-include 'koneksi.php';
-
-// ambil data dari database
-$query = "SELECT * FROM catatan_pelanggaran WHERE id = {$_GET['id']}";
-$result = mysqli_query($koneksi, $query);
-
-// konversi data ke format JSON
-$data = mysqli_fetch_assoc($result);
-
+require 'koneksi.php';
+$data = [];
+$id = $_GET['id'];
+$query = mysqli_query($koneksi, "select * from catatan where id ='$id'");
+$jumlah = mysqli_num_rows($query);
+if ($jumlah == 1) {
+    $row = mysqli_fetch_object($query);
+    $data = $row;
+}
 echo json_encode($data);
-
-mysqli_close($koneksi);
-?>
+echo mysqli_error($koneksi);

@@ -1,17 +1,10 @@
 <?php
-include 'koneksi.php';
-
-// ambil data dari database
-$query = "SELECT * FROM catatan_pelanggaran";
-$result = mysqli_query($koneksi, $query);
-
-// konversi data ke format JSON
-$data = array();
-while ($row = mysqli_fetch_assoc($result)) {
+require 'koneksi.php';
+$data = [];
+$query = mysqli_query($koneksi, "select * from catatan");
+while ($row = mysqli_fetch_object($query)) {
     $data[] = $row;
 }
-
+//tampilkan data dalam bentuk json
 echo json_encode($data);
-
-mysqli_close($koneksi);
-?>
+echo mysqli_error($koneksi);
